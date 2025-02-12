@@ -11,7 +11,8 @@ import SwiftUI
 struct CooksCabinetApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RecipeListView()
         }
+        .modelContainer(for: RecipeModel.self)
     }
 }
