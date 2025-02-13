@@ -4,5 +4,8 @@
 //
 //  Created by Danny Ellis on 2/13/25.
 //
+import UIKit
 
-import Foundation
+enum Constants {
+    static let placeholder = UIImage(systemName: "photo.fill")!
+}

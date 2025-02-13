@@ -15,6 +15,7 @@ class RecipeModel {
     var data: Data?
     var ingredients: [IngredientModel] = []
     var instructions: [String] = []
+    var recipeDescription: String
     var image: UIImage? {
         if let data {
             return UIImage(data: data)
@@ -23,11 +24,12 @@ class RecipeModel {
         }
     }
     
-    init(title: String, ingredients: [IngredientModel] = [], instructions: [String] = [], imageData: Data? = nil) {
+    init(title: String, ingredients: [IngredientModel] = [], instructions: [String] = [], imageData: Data? = nil, recipeDescription: String) {
         self.title = title
         self.data = imageData
         self.ingredients = ingredients
         self.instructions = instructions
+        self.recipeDescription = recipeDescription
     }
     
 }
@@ -35,7 +37,7 @@ class RecipeModel {
 extension RecipeModel {
     
     @MainActor
-    static var recipe: ModelContainer {
+    static var preview: ModelContainer {
         let container = try! ModelContainer(
             for: RecipeModel.self,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true)
@@ -43,9 +45,15 @@ extension RecipeModel {
         
         var recipes: [RecipeModel] {
             [
-                .init(title: "Recipe 1"),
-                .init(title: "Recipe 2"),
-                .init(title: "Recipe 3")
+                .init(
+                    title: "Recipe 1",
+                    ingredients: [IngredientModel(name: "Flower", quantity: "1 Cup")],
+                    instructions: ["Blow on the flower."],
+                    imageData: nil,
+                    recipeDescription: "This is a test recipe"
+                ),
+                .init(title: "Recipe 2", ingredients: [IngredientModel(name: "Flower", quantity: "2 Cups")], instructions: ["Blow on the flower."], imageData: nil, recipeDescription: "This is a test recipe"),
+                .init(title: "Recipe 3", ingredients: [IngredientModel(name: "Flower", quantity: "3 Cups")], instructions: ["Blow on the flower."], imageData: nil, recipeDescription: "This is a test recipe")
             ]
         }
         
