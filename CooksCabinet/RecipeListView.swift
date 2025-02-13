@@ -11,7 +11,7 @@ import SwiftData
 struct RecipeListView: View {
     @Query(sort: \RecipeModel.title) var recipes: [RecipeModel]
     @Environment(\.modelContext) private var modelContext
-//    @State private var formType: ModelFormType?
+    @State private var formType: ModelFormType?
     var body: some View {
         NavigationStack {
             Group {
@@ -60,11 +60,11 @@ struct RecipeListView: View {
             .navigationTitle(Text("Cooks Cabient"))
             .toolbar {
                 Button {
-//                    formType = .new
+                    formType = .new
                 }label: {
                     Image(systemName: "plus.circle.fill")
                 }
-//                .sheet(item: $formType) { $0 }
+                .sheet(item: $formType) { $0 }
             }
         }
     }
