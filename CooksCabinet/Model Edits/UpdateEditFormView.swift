@@ -21,10 +21,7 @@ struct UpdateEditFormView: View {
             Form {
                 if vm.isUpDating {
                     // Update Recipe Form
-                    Text("Is updating...")
-                } else {
-                    // New Recipe Form
-                    TextField("Title", text: $vm.title)
+                   TextField("Title", text: $vm.title)
                     VStack {
                         if vm.data != nil {
                             Button("Clear Image") {
@@ -67,8 +64,50 @@ struct UpdateEditFormView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .padding()
                     }
+                } else {
+                    // New Recipe form
+                    HStack {
+                        Button("Camera", systemImage: "camera") {
+                            if let error = CameraPermission.checkPermissions() {
+                                cameraError = error
+                            } else {
+                                showCamera.toggle()
+                            }
+                        }
+                        .alert(
+                            isPresented: .constant(cameraError != nil),
+                            error: cameraError
+                        ) { _ in
+                            Button("OK") {
+                                cameraError = nil
+                            }
+                        } message: { error in
+                            Text(error.recoverySuggestion ?? "Try again later")
+                        }
+                        .sheet(isPresented: $showCamera) {
+                            UIKitCamera(selectedImage: $vm.cameraImage)
+                                .ignoresSafeArea()
+                        }
+                        PhotosPicker(selection: $imagePicker.imageSelection) {
+                            Label("Photos", systemImage: "photo")
+                        }
+                    }
+                    .foregroundStyle(.white)
+                    .buttonStyle(.borderedProminent)
+                    Image(uiImage: vm.image)
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .padding()
+                    if vm.data != nil {
+                        Button("Generate Recipe") {
+                            let ai = aiBrain()
+                            ai.fetchOpenAIResponse(
+                                requestString: "Create a recipe with ground beef, soy sauce, and rice!"
+                            )
+                        }
+                    }
                 }
-
             }
             .onAppear {
                 imagePicker.setup(vm)
