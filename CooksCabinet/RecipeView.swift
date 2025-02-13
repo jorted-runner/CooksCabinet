@@ -11,6 +11,7 @@ import SwiftData
 struct RecipeView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @State private var formType: ModelFormType?
     let recipe: RecipeModel
     var body: some View {
         VStack {
@@ -30,9 +31,9 @@ struct RecipeView: View {
             }
             HStack {
                 Button("Edit") {
-//                    formType = .update(sample)
+                    formType = .update(recipe)
                 }
-//                .sheet(item: $formType) { $0 }
+                .sheet(item: $formType) { $0 }
                 Button("Delete", role: .destructive) {
                     modelContext.delete(recipe)
                     try? modelContext.save()

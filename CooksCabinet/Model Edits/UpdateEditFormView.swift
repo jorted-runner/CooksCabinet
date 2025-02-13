@@ -19,49 +19,56 @@ struct UpdateEditFormView: View {
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Title", text: $vm.title)
-                VStack {
-                    if vm.data != nil {
-                        Button("Clear Image") {
-                            vm.clearImage()
-                        }
-                        .buttonStyle(.bordered)
-                    }
-                    HStack {
-                        Button("Camera", systemImage: "camera") {
-                            if let error = CameraPermission.checkPermissions() {
-                                cameraError = error
-                            } else {
-                                showCamera.toggle()
+                if vm.isUpDating {
+                    // Update Recipe Form
+                    Text("Is updating...")
+                } else {
+                    // New Recipe Form
+                    TextField("Title", text: $vm.title)
+                    VStack {
+                        if vm.data != nil {
+                            Button("Clear Image") {
+                                vm.clearImage()
                             }
+                            .buttonStyle(.bordered)
                         }
-                        .alert(
-                            isPresented: .constant(cameraError != nil),
-                            error: cameraError
-                        ) { _ in
-                            Button("OK") {
-                                cameraError = nil
+                        HStack {
+                            Button("Camera", systemImage: "camera") {
+                                if let error = CameraPermission.checkPermissions() {
+                                    cameraError = error
+                                } else {
+                                    showCamera.toggle()
+                                }
                             }
-                        } message: { error in
-                            Text(error.recoverySuggestion ?? "Try again later")
+                            .alert(
+                                isPresented: .constant(cameraError != nil),
+                                error: cameraError
+                            ) { _ in
+                                Button("OK") {
+                                    cameraError = nil
+                                }
+                            } message: { error in
+                                Text(error.recoverySuggestion ?? "Try again later")
+                            }
+                            .sheet(isPresented: $showCamera) {
+                                UIKitCamera(selectedImage: $vm.cameraImage)
+                                    .ignoresSafeArea()
+                            }
+                            PhotosPicker(selection: $imagePicker.imageSelection) {
+                                Label("Photos", systemImage: "photo")
+                            }
+                            
                         }
-                        .sheet(isPresented: $showCamera) {
-                            UIKitCamera(selectedImage: $vm.cameraImage)
-                                .ignoresSafeArea()
-                        }
-                        PhotosPicker(selection: $imagePicker.imageSelection) {
-                            Label("Photos", systemImage: "photo")
-                        }
-                        
+                        .foregroundStyle(.white)
+                        .buttonStyle(.borderedProminent)
+                        Image(uiImage: vm.image)
+                            .resizable()
+                            .scaledToFit()
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .padding()
                     }
-                    .foregroundStyle(.white)
-                    .buttonStyle(.borderedProminent)
-                    Image(uiImage: vm.image)
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .padding()
                 }
+
             }
             .onAppear {
                 imagePicker.setup(vm)
