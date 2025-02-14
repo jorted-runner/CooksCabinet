@@ -27,10 +27,13 @@ struct RecipeView: View {
             Text("Ingredients").font(.title2)
             ForEach(recipe.ingredients, id: \.self) { ingredient in
                 Text("- \(ingredient)")
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
+            Spacer()
             Text("Instructions").font(.title2)
-            ForEach(recipe.instructions, id: \.self) { instruction in
-                Text(instruction)
+            ForEach(Array(recipe.instructions.enumerated()), id: \.element) { index, instruction in
+                Text("\(index + 1). \(instruction)")
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             HStack {
                 Button("Edit") {
