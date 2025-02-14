@@ -15,6 +15,11 @@ class UpdateEditFormViewModel {
     var recipe: RecipeModel?
     var cameraImage: UIImage?
     
+    // New properties to store recipe details
+    var ingredients: [IngredientModel] = []
+    var instructions: [String] = []
+    var recipeDescription: String = ""
+    
     var image: UIImage {
         if let data, let uiImage = UIImage(data: data) {
             return uiImage
@@ -25,10 +30,13 @@ class UpdateEditFormViewModel {
     
     init() {}
     
-    init (recipe: RecipeModel) {
+    init(recipe: RecipeModel) {
         self.recipe = recipe
         self.title = recipe.title
         self.data = recipe.data
+        self.ingredients = recipe.ingredients
+        self.instructions = recipe.instructions
+        self.recipeDescription = recipe.recipeDescription
     }
     
     @MainActor

@@ -51,6 +51,8 @@ struct RecipeListView: View {
                             }
                         }
                         .listStyle(.plain)
+                    }.refreshable {
+                        try? modelContext.save() // Ensure updates are committed
                     }
                 }
             }

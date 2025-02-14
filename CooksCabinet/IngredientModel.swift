@@ -5,15 +5,9 @@
 //  Created by Danny Ellis on 2/12/25.
 //
 
-import SwiftData
+import Foundation
 
-@Model
-class IngredientModel {
-    var name: String
-    var quantity: String
-    
-    init(name: String, quantity: String) {
-        self.name = name
-        self.quantity = quantity
-    }
+struct IngredientModel: Codable {
+    let name: String
+    let quantity: String
 }

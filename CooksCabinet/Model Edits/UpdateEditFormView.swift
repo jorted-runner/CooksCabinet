@@ -16,6 +16,7 @@ struct UpdateEditFormView: View {
     @State private var imagePicker = ImagePicker()
     @State private var showCamera = false
     @State private var cameraError: CameraPermission.CameraError?
+    @State private var isGeneratingRecipe = false
     var body: some View {
         NavigationStack {
             Form {
@@ -101,11 +102,44 @@ struct UpdateEditFormView: View {
                         .padding()
                     if vm.data != nil {
                         Button("Generate Recipe") {
+                            isGeneratingRecipe = true  // Disable button
                             let ai = aiBrain()
                             ai.fetchOpenAIResponse(
-                                requestString: "Create a recipe with ground beef, soy sauce, and rice!"
-                            )
+                                requestString: "Create a recipe based off of the ingredients in this image.",
+                                data: vm
+                            ) { response in
+                                DispatchQueue.main.async {
+                                    
+                                    guard let response = response else {
+                                        print("Failed to get a response from OpenAI.")
+                                        return
+                                    }
+                                    
+                                    // Extract the JSON part from the response
+                                    guard let jsonString = ai.extractJSON(from: response),
+                                          let jsonData = jsonString.data(using: .utf8) else {
+                                        print("Failed to extract JSON from response")
+                                        return
+                                    }
+                                    
+                                    do {
+                                        // Decode JSON into RecipeModel
+                                        let decodedRecipe = try JSONDecoder().decode(RecipeAPIResponse.self, from: jsonData)
+                                        
+                                        // Update ViewModel properties
+                                        vm.title = decodedRecipe.title
+                                        vm.ingredients = decodedRecipe.ingredients
+                                        vm.instructions = decodedRecipe.instructions
+                                        vm.recipeDescription = decodedRecipe.recipeDescription
+                                        print("\(vm.title)")
+                                        
+                                    } catch {
+                                        print("Error decoding JSON: \(error)")
+                                    }
+                                }
+                            }
                         }
+                        .disabled(isGeneratingRecipe)
                     }
                 }
             }
@@ -137,14 +171,13 @@ struct UpdateEditFormView: View {
                                     dismiss()
                                 }
                             } else {
+                                print("Saving")
                                 let newRecipe = RecipeModel(
                                     title: vm.title,
-                                    ingredients: [IngredientModel(
-                                        name: "",
-                                        quantity: "0"
-                                    )],
-                                    instructions: ["test step"],
-                                    recipeDescription: "test desc"
+                                    ingredients: vm.ingredients,
+                                    instructions: vm.instructions,
+                                    imageData: nil,
+                                    recipeDescription: vm.recipeDescription
                                 )
                                 if vm.image != Constants.placeholder {
                                     newRecipe.data = vm.image.jpegData(compressionQuality: 0.8)
@@ -152,7 +185,14 @@ struct UpdateEditFormView: View {
                                     newRecipe.data = nil
                                 }
                                 modelContext.insert(newRecipe)
-                                dismiss()
+                                
+                                do {
+                                    try modelContext.save()  // <-- Ensure the changes are saved
+                                    print("Saved")
+                                    dismiss()
+                                } catch {
+                                    print("Failed to save recipe: \(error)")
+                                }
                             }
                         }
                     ) {Text(vm.isUpDating ? "Update" : "Add")
@@ -160,7 +200,14 @@ struct UpdateEditFormView: View {
                 }
             }
         }
-    }
+    }   
+}
+
+struct RecipeAPIResponse: Codable {
+    var title: String
+    var ingredients: [IngredientModel]
+    var instructions: [String]
+    var recipeDescription: String
 }
 
 #Preview {

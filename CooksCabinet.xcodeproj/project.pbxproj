@@ -6,14 +6,31 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E8A322942D5FB11C002BB249 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E8A322932D5FB11C002BB249 /* Config.xcconfig */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		E8766D0B2D5EAFFF0018823C /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		E8A322932D5FB11C002BB249 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		E8B07F252D5D50FC002DD2F1 /* CooksCabinet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CooksCabinet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E8A322962D5FB1CC002BB249 /* Exceptions for "CooksCabinet" folder in "CooksCabinet" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E8B07F242D5D50FC002DD2F1 /* CooksCabinet */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E8B07F272D5D50FC002DD2F1 /* CooksCabinet */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E8A322962D5FB1CC002BB249 /* Exceptions for "CooksCabinet" folder in "CooksCabinet" target */,
+			);
 			path = CooksCabinet;
 			sourceTree = "<group>";
 		};
@@ -33,6 +50,7 @@
 		E8B07F1C2D5D50FC002DD2F1 = {
 			isa = PBXGroup;
 			children = (
+				E8A322932D5FB11C002BB249 /* Config.xcconfig */,
 				E8B07F272D5D50FC002DD2F1 /* CooksCabinet */,
 				E8B07F262D5D50FC002DD2F1 /* Products */,
 			);
@@ -110,6 +128,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8A322942D5FB11C002BB249 /* Config.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,7 +147,7 @@
 /* Begin XCBuildConfiguration section */
 		E8B07F312D5D50FE002DD2F1 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E8766D0B2D5EAFFF0018823C /* Config.xcconfig */;
+			baseConfigurationReference = E8A322932D5FB11C002BB249 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -192,7 +211,7 @@
 		};
 		E8B07F322D5D50FE002DD2F1 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E8766D0B2D5EAFFF0018823C /* Config.xcconfig */;
+			baseConfigurationReference = E8A322932D5FB11C002BB249 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -249,7 +268,6 @@
 		};
 		E8B07F342D5D50FE002DD2F1 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E8766D0B2D5EAFFF0018823C /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -259,6 +277,9 @@
 				DEVELOPMENT_TEAM = FK88RC22N4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CooksCabinet/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Needs access to camera to generate recipes based off images";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -279,7 +300,6 @@
 		};
 		E8B07F352D5D50FE002DD2F1 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E8766D0B2D5EAFFF0018823C /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -289,6 +309,9 @@
 				DEVELOPMENT_TEAM = FK88RC22N4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CooksCabinet/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Needs access to camera to generate recipes based off images";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
