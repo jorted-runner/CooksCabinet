@@ -24,8 +24,13 @@ struct RecipeView: View {
                 .scaledToFit()
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .padding()
-            List(recipe.ingredients) { ingredient in
-                Text("- \(ingredient.quantity) \(ingredient.name)")
+            Text("Ingredients").font(.title2)
+//            ForEach(recipe.ingredients) { ingredient in
+//                Text("- \(ingredient.quantity) \(ingredient.name)")
+//            }
+            Text("Instructions").font(.title2)
+            ForEach(recipe.instructions, id: \.self) { instruction in
+                Text(instruction)
             }
             HStack {
                 Button("Edit") {
