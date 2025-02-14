@@ -25,9 +25,9 @@ struct RecipeView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .padding()
             Text("Ingredients").font(.title2)
-//            ForEach(recipe.ingredients) { ingredient in
-//                Text("- \(ingredient.quantity) \(ingredient.name)")
-//            }
+            ForEach(recipe.ingredients, id: \.self) { ingredient in
+                Text("- \(ingredient)")
+            }
             Text("Instructions").font(.title2)
             ForEach(recipe.instructions, id: \.self) { instruction in
                 Text(instruction)

@@ -225,7 +225,7 @@ struct UpdateEditFormView: View {
 
 struct RecipeAPIResponse: Codable {
     var title: String
-    var ingredients: [IngredientModel]
+    var ingredients: [String]
     var instructions: [String]
     var recipeDescription: String
 }

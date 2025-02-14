@@ -90,7 +90,7 @@ class aiBrain {
                     content: [
                         OpenAIRecipeRequest.Content(
                             type: "text",
-                            text: "You are a helpful assistant trained as a chef designed to output a recipe in JSON format. following this format {title: String, recipeDescription: String, ingredients: [[quantity:String, name:String]], instructions: [String]}",
+                            text: "You are a helpful assistant trained as a chef designed to output a recipe in JSON format. following this format {title: String, recipeDescription: String, ingredients: [String], instructions: [String]}",
                             image_url: nil
                         )
                     ]
