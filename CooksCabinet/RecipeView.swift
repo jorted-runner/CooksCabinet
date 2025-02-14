@@ -24,11 +24,9 @@ struct RecipeView: View {
                 .scaledToFit()
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .padding()
-//            VStack {
-//                ForEach(recipe.ingredients, id: \.self) { ingredient in
-//                    Text(ingredient.quantity)
-//                }
-//            }
+            List(recipe.ingredients) { ingredient in
+                Text("- \(ingredient.quantity) \(ingredient.name)")
+            }
             HStack {
                 Button("Edit") {
                     formType = .update(recipe)

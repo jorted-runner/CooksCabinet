@@ -104,7 +104,7 @@ struct UpdateEditFormView: View {
                         Button("Generate Recipe") {
                             isGeneratingRecipe = true  // Disable button
                             let ai = aiBrain()
-                            ai.fetchOpenAIResponse(
+                            ai.generateRecipe(
                                 requestString: "Create a recipe based off of the ingredients in this image.",
                                 data: vm
                             ) { response in
@@ -132,7 +132,48 @@ struct UpdateEditFormView: View {
                                         vm.instructions = decodedRecipe.instructions
                                         vm.recipeDescription = decodedRecipe.recipeDescription
                                         print("\(vm.title)")
-                                        
+                                        ai.generateImage(
+                                            title: vm.title,
+                                            description: vm.recipeDescription
+                                        ) { response in
+                                            DispatchQueue.main.async {
+                                                guard let response = response else {
+                                                    print("Failed to get a response from OpenAI.")
+                                                    return
+                                                }
+                                                ai.downloadImage(from: response) { image in
+                                                    guard let imageData = image?.jpegData(compressionQuality: 0.8) else { return }
+                                                    
+                                                    DispatchQueue.main.async {
+                                                        print("Saving")
+                                                        vm.data = imageData
+                                                        let newRecipe = RecipeModel(
+                                                            title: vm.title,
+                                                            ingredients: vm.ingredients,
+                                                            instructions: vm.instructions,
+                                                            imageData: vm.data,
+                                                            recipeDescription: vm.recipeDescription
+                                                        )
+                                                        if vm.image != Constants.placeholder {
+                                                            newRecipe.data = vm.image.jpegData(compressionQuality: 0.8)
+                                                        } else {
+                                                            newRecipe.data = nil
+                                                        }
+                                                        modelContext.insert(newRecipe)
+                                                        
+                                                        do {
+                                                            try modelContext.save()  // <-- Ensure the changes are saved
+                                                            print("Saved")
+                                                            dismiss()
+                                                        } catch {
+                                                            print("Failed to save recipe: \(error)")
+                                                        }
+                                                        
+                                                     }
+                                                }
+                                                
+                                            }
+                                        }
                                     } catch {
                                         print("Error decoding JSON: \(error)")
                                     }
@@ -157,46 +198,25 @@ struct UpdateEditFormView: View {
                         dismiss()
                     }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(
-                        action: {
-                            if vm.isUpDating {
-                                if let recipe = vm.recipe {
-                                    if vm.image != Constants.placeholder {
-                                        recipe.data = vm.image.jpegData(compressionQuality: 0.8)
-                                    } else {
-                                        recipe.data = nil
+                if vm.isUpDating {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(
+                            action: {
+                                if vm.isUpDating {
+                                    if let recipe = vm.recipe {
+                                        if vm.image != Constants.placeholder {
+                                            recipe.data = vm.image.jpegData(compressionQuality: 0.8)
+                                        } else {
+                                            recipe.data = nil
+                                        }
+                                        recipe.title = vm.title
+                                        dismiss()
                                     }
-                                    recipe.title = vm.title
-                                    dismiss()
-                                }
-                            } else {
-                                print("Saving")
-                                let newRecipe = RecipeModel(
-                                    title: vm.title,
-                                    ingredients: vm.ingredients,
-                                    instructions: vm.instructions,
-                                    imageData: nil,
-                                    recipeDescription: vm.recipeDescription
-                                )
-                                if vm.image != Constants.placeholder {
-                                    newRecipe.data = vm.image.jpegData(compressionQuality: 0.8)
-                                } else {
-                                    newRecipe.data = nil
-                                }
-                                modelContext.insert(newRecipe)
-                                
-                                do {
-                                    try modelContext.save()  // <-- Ensure the changes are saved
-                                    print("Saved")
-                                    dismiss()
-                                } catch {
-                                    print("Failed to save recipe: \(error)")
                                 }
                             }
-                        }
-                    ) {Text(vm.isUpDating ? "Update" : "Add")
-                    }.disabled(vm.isDisabled)
+                        ) {Text("Update")
+                        }.disabled(vm.isDisabled)
+                    }
                 }
             }
         }
