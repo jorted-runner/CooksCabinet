@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+// Structure of Chat Completion Request
 struct OpenAIRecipeRequest: Codable {
     let model: String
     let store: Bool
@@ -15,7 +16,7 @@ struct OpenAIRecipeRequest: Codable {
     
     struct Message: Codable {
         let role: String
-        let content: [Content] // Allow content to be multiple types
+        let content: [Content]
     }
     
     struct Content: Codable {
@@ -25,6 +26,7 @@ struct OpenAIRecipeRequest: Codable {
     }
 }
 
+// Structure of Chat Completion Response
 struct OpenAIRecipeResponse: Codable {
     struct Choice: Codable {
         struct Message: Codable {
@@ -36,6 +38,7 @@ struct OpenAIRecipeResponse: Codable {
     let choices: [Choice]
 }
 
+// Structure of Image Generation Request
 struct OpenAIImageRequest: Codable {
     let model: String
     let prompt: String
@@ -43,6 +46,7 @@ struct OpenAIImageRequest: Codable {
     let size: String?
 }
 
+// Structure of Image Generation Response
 struct OpenAIImageResponse: Codable {
     struct Data: Codable {
         let url: String
@@ -50,6 +54,7 @@ struct OpenAIImageResponse: Codable {
     let data: [Data]
 }
 
+// Structure of Error Response
 struct OpenAIErrorResponse: Codable {
     struct APIError: Codable {
         let message: String
@@ -61,25 +66,28 @@ struct OpenAIErrorResponse: Codable {
 }
 
 class aiBrain {
+    // Function to generate a recipe based off of user image
     func generateRecipe(requestString: String, data: UpdateEditFormViewModel, completion: @escaping (String?) -> Void) {
         guard let apiKey = Bundle.main.infoDictionary?["OPEN_AI_API_KEY"] as? String else {
             print("Error: Missing OpenAI API Key")
             completion(nil)
             return
         }
+        // transform image to base64 encoded string and then into a Data URL
         guard let imageData = data.image.jpegData(compressionQuality: 0.8) else {
             print("Error: Unable to process image")
             completion(nil)
             return
         }
         let base64ImageString = imageData.base64EncodedString()
-        
+        let base64ImageDataURL = "data:image/jpeg;base64,\(base64ImageString)"
+
+        // Set up OpenAI request
         let url = URL(string: "https://api.openai.com/v1/chat/completions")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let base64ImageDataURL = "data:image/jpeg;base64,\(base64ImageString)"
         
         let body = OpenAIRecipeRequest(
             model: "gpt-4o-mini",
@@ -149,13 +157,14 @@ class aiBrain {
         }.resume()
     }
     
-    func generateImage(title: String, description: String, completion: @escaping (String?) -> Void) {
+    // Function to generate an image based on the recipe title, description and ingredients
+    func generateImage(title: String, description: String, ingredients: [String], completion: @escaping (String?) -> Void) {
         guard let apiKey = Bundle.main.infoDictionary?["OPEN_AI_API_KEY"] as? String else {
             print("Error: Missing OpenAI API Key")
             completion(nil)
             return
         }
-        let requestString = "Generate an image based off the title and description of this recipe. Title: \(title), Description: \(description)."
+        let requestString = "Generate an image based off the title, description, and ingredients of this recipe. Title: \(title), Description: \(description), Ingredients: \(ingredients)."
         let body = OpenAIImageRequest(
             model: "dall-e-3",
             prompt: requestString,
@@ -219,6 +228,7 @@ class aiBrain {
         }.resume()
     }
     
+    // Extract the recipe JSON from the response string
     func extractJSON(from response: String) -> String? {
         let pattern = #"```json\n([\s\S]*?)\n```"#  // Matches text inside ```json ... ```
         
@@ -232,6 +242,7 @@ class aiBrain {
         return nil
     }
     
+    // Download the image from the response url
     func downloadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
         guard let url = URL(string: urlString) else {
             print("Invalid URL")

@@ -135,7 +135,8 @@ struct UpdateEditFormView: View {
                                         print("\(vm.title)")
                                         ai.generateImage(
                                             title: vm.title,
-                                            description: vm.recipeDescription
+                                            description: vm.recipeDescription,
+                                            ingredients: vm.ingredients
                                         ) { response in
                                             DispatchQueue.main.async {
                                                 guard let response = response else {
