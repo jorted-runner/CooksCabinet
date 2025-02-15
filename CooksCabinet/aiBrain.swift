@@ -4,6 +4,10 @@
 //
 //  Created by Danny Ellis on 2/13/25.
 //
+//  This file defines `aiBrain`, a class responsible for handling AI-based functionality.
+//  It communicates with OpenAI's API to generate recipes based on images, create images
+//  from recipes, and extract relevant information from responses.
+//
 
 import Foundation
 import UIKit
