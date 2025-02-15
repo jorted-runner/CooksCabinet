@@ -69,15 +69,26 @@ struct OpenAIErrorResponse: Codable {
     let error: APIError
 }
 
+/// `aiBrain` handles all AI-related functionalities, including:
+/// - Generating recipes based on ingredient images.
+/// - Generating images based on recipe details.
+/// - Extracting structured data from AI-generated text.
+/// - Downloading AI-generated images.
 class aiBrain {
-    // Function to generate a recipe based off of user image
+    /// Generates a recipe based on an image of ingredients.
+    /// - Parameters:
+    ///   - requestString: The text prompt sent to the AI.
+    ///   - data: The ViewModel containing the selected image.
+    ///   - completion: Completion handler that returns the AI-generated recipe as a string.
     func generateRecipe(requestString: String, data: UpdateEditFormViewModel, completion: @escaping (String?) -> Void) {
+        // Retrieve the OpenAI API key from the app's environment
         guard let apiKey = Bundle.main.infoDictionary?["OPEN_AI_API_KEY"] as? String else {
             print("Error: Missing OpenAI API Key")
             completion(nil)
             return
         }
-        // transform image to base64 encoded string and then into a Data URL
+        
+        // Convert the user's selected image into a base64-encoded string
         guard let imageData = data.image.jpegData(compressionQuality: 0.8) else {
             print("Error: Unable to process image")
             completion(nil)
@@ -85,14 +96,15 @@ class aiBrain {
         }
         let base64ImageString = imageData.base64EncodedString()
         let base64ImageDataURL = "data:image/jpeg;base64,\(base64ImageString)"
-
-        // Set up OpenAI request
+        
+        // Set up OpenAI API request
         let url = URL(string: "https://api.openai.com/v1/chat/completions")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
+        // Create request body for AI to generate a recipe in JSON format
         let body = OpenAIRecipeRequest(
             model: "gpt-4o-mini",
             store: true,
@@ -125,12 +137,9 @@ class aiBrain {
             return
         }
         
-        URLSession.shared.dataTask(with: request) {
-             data,
-             response,
-             error in
-                        guard let data = data,
-             error == nil else {
+        // Perform API request
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
                 print("Error fetching response:", error ?? "Unknown error")
                 completion(nil)
                 return
@@ -138,18 +147,13 @@ class aiBrain {
             
             do {
                 // Try decoding a successful response
-                let decodedResponse = try JSONDecoder().decode(
-                    OpenAIRecipeResponse.self,
-                    from: data
-                )
+                let decodedResponse = try JSONDecoder().decode(OpenAIRecipeResponse.self, from: data)
                 if let message = decodedResponse.choices.first?.message.content {
-                    completion(
-                        message
-                    ) // Return the message via completion handler
+                    completion(message) // Return the AI-generated recipe
                     return
                 }
             } catch {
-                // Check if it's an error response instead
+                // Handle error response
                 do {
                     let errorResponse = try JSONDecoder().decode(OpenAIErrorResponse.self, from: data)
                     print("OpenAI API Error: \(errorResponse.error.message)")
@@ -161,7 +165,14 @@ class aiBrain {
         }.resume()
     }
     
-    // Function to generate an image based on the recipe title, description and ingredients
+    /// Generates an AI-generated image based on the provided recipe details.
+    /// - Parameters:
+    ///   - title: The title of the recipe.
+    ///   - description: A short description of the recipe.
+    ///   - ingredients: A list of ingredients used in the recipe.
+    ///   - completion: Completion handler that returns the URL of the AI-generated image as a `String?`.
+    /// - Sends a request to OpenAI's DALL-E API with the recipe details as a prompt.
+    /// - On success, it returns the image URL; on failure, it handles errors and prints relevant messages.
     func generateImage(title: String, description: String, ingredients: [String], completion: @escaping (String?) -> Void) {
         guard let apiKey = Bundle.main.infoDictionary?["OPEN_AI_API_KEY"] as? String else {
             print("Error: Missing OpenAI API Key")
@@ -232,7 +243,10 @@ class aiBrain {
         }.resume()
     }
     
-    // Extract the recipe JSON from the response string
+    /// Extracts JSON-formatted content from an AI-generated response string.
+    /// - Parameter response: The raw response string received from the AI.
+    /// - Returns: A `String?` containing the extracted JSON data, or `nil` if no valid JSON format is found.
+    /// - This function searches for text enclosed within triple backticks (` ```json ... ``` `).
     func extractJSON(from response: String) -> String? {
         let pattern = #"```json\n([\s\S]*?)\n```"#  // Matches text inside ```json ... ```
         
@@ -243,10 +257,15 @@ class aiBrain {
                 return String(response[range])
             }
         }
+        // If no JSON is found in the response, return nil.
         return nil
     }
     
-    // Download the image from the response url
+    /// Downloads an image from the provided URL.
+    /// - Parameter urlString: The URL of the image to download.
+    /// - Parameter completion: Completion handler that returns a `UIImage?`.
+    /// - If successful, the function returns the downloaded image.
+    /// - If an error occurs, it prints an error message and returns `nil`.
     func downloadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
         guard let url = URL(string: urlString) else {
             print("Invalid URL")

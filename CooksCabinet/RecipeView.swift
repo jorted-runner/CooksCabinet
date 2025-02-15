@@ -4,10 +4,19 @@
 //
 //  Created by Danny Ellis on 2/13/25.
 //
+//  This file defines the `RecipeView`, which displays the details of a selected recipe.
+//  Users can view recipe information, including title, description, image, ingredients, and instructions.
+//  The view also allows users to edit or delete the recipe.
+//
 
 import SwiftUI
 import SwiftData
 
+/// `RecipeView` displays the details of a selected recipe.
+/// - Shows recipe title, description, ingredients, and instructions.
+/// - Displays the associated image or a placeholder if none exists.
+/// - Allows users to edit or delete the recipe.
+/// - Uses `ScrollView` for better readability of long content.
 struct RecipeView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss

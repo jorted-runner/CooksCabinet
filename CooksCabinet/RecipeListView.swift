@@ -4,23 +4,36 @@
 //
 //  Created by Danny Ellis on 2/12/25.
 //
+//  This file defines the `RecipeListView`, which displays a list of saved recipes.
+//  Users can navigate to recipe details, add new recipes, or delete existing ones.
+//
 
 import SwiftUI
 import SwiftData
 
+/// `RecipeListView` displays a list of saved recipes.
+/// - Fetches recipes from the database using `@Query`.
+/// - Supports navigation to recipe details.
+/// - Allows users to add new recipes or delete existing ones.
+/// - Uses `NavigationStack` for structured navigation.
 struct RecipeListView: View {
+    /// Fetches and sorts recipes alphabetically by title from the data model.
     @Query(sort: \RecipeModel.title) var recipes: [RecipeModel]
     @Environment(\.modelContext) private var modelContext
+
+    /// Tracks the form state for adding a new recipe.
     @State private var formType: ModelFormType?
     var body: some View {
         NavigationStack {
             Group {
                 if recipes.isEmpty {
+                    // Display a placeholder view when no recipes are found.
                     ContentUnavailableView(
                         "No Recipes Found",
                         systemImage: "exclamationmark.circle"
                     )
                 } else {
+                    // Display a list of saved recipes.
                     List(recipes) { recipe in
                         NavigationLink(value: recipe) {
                             HStack {

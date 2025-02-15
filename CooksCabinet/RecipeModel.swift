@@ -4,10 +4,18 @@
 //
 //  Created by Danny Ellis on 2/12/25.
 //
+//  This file defines the `RecipeModel` class, which represents a recipe in the application.
+//  Each recipe contains a title, ingredients, instructions, an optional image, and a description.
+//  The model uses `SwiftData` for persistence and supports external image storage.
+//
 
 import UIKit
 import SwiftData
 
+/// `RecipeModel` represents a recipe entry in the app.
+/// - Stored using `SwiftData` for persistence.
+/// - Includes a title, list of ingredients, instructions, a description, and an optional image.
+/// - Uses `@Model` to enable automatic data persistence.
 @Model
 class RecipeModel {
     var title: String
@@ -42,27 +50,29 @@ class RecipeModel {
 
 extension RecipeModel {
     
+    /// Provides a preview `ModelContainer` with sample recipe data.
+    /// - This is used for SwiftUI previews and testing without modifying actual storage.
     @MainActor
     static var preview: ModelContainer {
         let container = try! ModelContainer(
             for: RecipeModel.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true) // Stores preview data in memory only
         )
         
+        // Sample recipes for preview
         var recipes: [RecipeModel] {
             [
                 .init(
                     title: "Recipe 1",
-                    ingredients: ["1 cup flower"],
-                    instructions: ["Blow on the flower."],
+                    ingredients: ["1 cup flour"],
+                    instructions: ["Mix flour with water."],
                     imageData: nil,
                     recipeDescription: "This is a test recipe"
-                ),
-//                .init(title: "Recipe 2", ingredients: [IngredientModel(name: "Flower", quantity: "2 Cups")], instructions: ["Blow on the flower."], imageData: nil, recipeDescription: "This is a test recipe"),
-//                .init(title: "Recipe 3", ingredients: [IngredientModel(name: "Flower", quantity: "3 Cups")], instructions: ["Blow on the flower."], imageData: nil, recipeDescription: "This is a test recipe")
+                )
             ]
         }
         
+        // Insert sample recipes into the in-memory database
         recipes.forEach {
             container.mainContext.insert($0)
         }
