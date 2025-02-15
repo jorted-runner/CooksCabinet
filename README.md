@@ -1,8 +1,8 @@
-# CooksCabinet Mobile – AI-Powered Recipe Generation  
+# CooksCabinet – AI-Powered Recipe Generation  
 
 ## Overview  
 
-CooksCabinet Mobile is a recipe management app that leverages AI to generate recipes based on images of ingredients. Users can take a picture of ingredients they have on hand or upload an image and the app will suggest a recipe using those ingredients. The app also allows users to edit, organize, and save their favorite recipes for future use.  
+CooksCabinet is a recipe management app that leverages AI to generate recipes based on images of ingredients. Users can take a picture of ingredients they have on hand or upload an image and the app will suggest a recipe using those ingredients. The app also allows users to edit, organize, and save their favorite recipes for future use.  
 
 The purpose of this app is to further my knowledge of machine learning integration in mobile applications, improve my skills in Swift and iOS development, and explore image processing techniques. This project focuses on implementing AI-powered ingredient recognition, UI state management, and data persistence while following the MVVM architecture.  
 
