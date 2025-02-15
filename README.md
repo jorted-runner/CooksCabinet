@@ -30,6 +30,13 @@ The purpose of this app is to further my knowledge of machine learning integrati
 ## Future Work  
 
 * Add dietary restrictions options to the recipe generation
+* Implement Recipe Editing to allow users to edit description, ingredients, and instructions
+* Add social media elements. Allow user to follow and view other users recipes
+* Add 'cook books' to allow users to save recipes the want to cook or have cook
+* Add recipe rating system
+* Add comments
+* Integrate shopping list generation
+* Integrate online shopping/grocery ordering
 * Implement cloud syncing for recipe storage across multiple devices.  
 * Add a category/tagging system to better organize recipes.  
 * Enhance the UI with animations and better transitions.  
