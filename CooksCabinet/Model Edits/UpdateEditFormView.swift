@@ -16,7 +16,7 @@ struct UpdateEditFormView: View {
     @State private var imagePicker = ImagePicker()
     @State private var showCamera = false
     @State private var cameraError: CameraPermission.CameraError?
-    @State private var isGeneratingRecipe = false
+    @State private var isGeneratingRecipe = false   
     var body: some View {
         NavigationStack {
             Form {
@@ -67,6 +67,7 @@ struct UpdateEditFormView: View {
                     }
                 } else {
                     // New Recipe form
+                    Text("Recipe Generator")
                     HStack {
                         Button("Camera", systemImage: "camera") {
                             if let error = CameraPermission.checkPermissions() {

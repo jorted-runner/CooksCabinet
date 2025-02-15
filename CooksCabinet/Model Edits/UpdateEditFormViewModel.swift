@@ -15,7 +15,6 @@ class UpdateEditFormViewModel {
     var recipe: RecipeModel?
     var cameraImage: UIImage?
     
-    // New properties to store recipe details
     var ingredients: [String] = []
     var instructions: [String] = []
     var recipeDescription: String = ""
